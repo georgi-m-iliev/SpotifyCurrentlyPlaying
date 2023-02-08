@@ -23,8 +23,8 @@ function App() {
                 console.log("Token is found, saving...")
                 setCookie("spotify_token", params.get("#access_token"))
                 spotifyApi.setAccessToken(params.get("#access_token"))
-//                history.pushState({}, "", window.location.origin);
-                window.location.replace(window.location.origin);
+//                history.pushState({}, "", import.meta.env.VITE_ORIGIN_URL);
+                window.location.replace(import.meta.env.VITE_ORIGIN_URL);
             }
             else {
                 console.log("Token not found, redirecting...")
