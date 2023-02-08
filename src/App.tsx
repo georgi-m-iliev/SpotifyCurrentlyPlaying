@@ -3,10 +3,10 @@ import {useCookies} from 'react-cookie'
 import './App.css'
 import SpotifyWebApi from 'spotify-web-api-js'
 
-const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/en/authorize?"
-                         "client_id=" + import.meta.env.CLIENT_ID +
-                         "&redirect_uri=" + import.meta.env.REDIRECT_URI +
-                         "&response_type=token"
+const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/en/authorize?" +
+                         "client_id=" + import.meta.env.VITE_CLIENT_ID +
+                         "&redirect_uri=" + import.meta.env.VITE_REDIRECT_URI +
+                         "&response_type=token" +
                          "&scope=user-read-currently-playing"
 
 function App() {
