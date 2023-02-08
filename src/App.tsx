@@ -5,19 +5,35 @@ import Spotify from 'spotify-web-api-js'
 import SpotifyWebApi from 'spotify-web-api-js'
 
 function App() {
-    const [count, setCount] = useState(0);
     const [imageURL, setImageURLURL] = useState("");
     const [spotifyApi, ] = useState(new SpotifyWebApi());
 
+    const [time, setTime] = useState(Date.now());
+
     useEffect(() => {
-        spotifyApi.setAccessToken('BQAC_j8UUn0e2CZBM_SFsONBQVeDbd1PAxHPgtBACkGhQdT7k3LlEtB7ByyQoxjQetcHqsHuB_pOJL6gb2xUa0CCnVL1_flSjLB_r6s-bUYq-2er0wJ11_Zkj7olAkhz8c197EtSfyWGDJFmNouQuAJXjQA100qsDRfOxRbWuMmp8ZjNQwCgkC6CZfD6ECGIYaDPeMdUUMTC0nBNxuimZgL8Y3aviT-30zcGppxJI-ajiW2iyRhhQLJlkxDqFCWMIgoc6rGG_KeJOTD10_Juy0tlDm4ua8ohdJZenpWU-jN6Icvfy1Y');
+        console.log("First startup")
+        spotifyApi.setAccessToken('BQDrjTrjrD3Ruq_HgY6KkhZpMe3MbRrymI6aUlVUjxvyxacqmYxScGb3JTtKHGGZMGcGnjgjr4wxwULkuyg9cr2vOxAf9Vg8oTXTRD1bpuzJaNNdQVRX0WZuPwIbwFGvXerI962T3UCUlF-hC7xogj5Kzu4PryMC2hE2qh6bskmXg9Y7IYHn4qd5cchPPrwrn7wH5xeTGvDvNi61xusNCGOjofdKdsPnSsXYlc8i-3ptzyDV86FwwVmO9SoqK7DTsFBVDFWVIJKZdcXlFa3Z9d-rx0INft6HTMmfp0RZpW7CPipoXtY');
+
+    }, [])
+
+    useEffect(() => {
         let objectCurrent = spotifyApi.getMyCurrentPlayingTrack()
+        let interval:number
         objectCurrent.then((result) => {
             if(result.item != null) {
+                console.log(result)
                 setImageURLURL(result.item.album.images[0].url)
+                let duration_ms:number = result.item.duration_ms
+                let progress_ms:number = result.progress_ms ? result.progress_ms : 0
+                interval = setInterval(() => setTime(Date.now()), (duration_ms - progress_ms));
             }
         })
-    })
+        console.log("repainting!")
+        return () => {
+            clearInterval(interval);
+        };
+    }, [time]);
+
     return (
         <div className="App">
             <div>
