@@ -11,8 +11,9 @@ const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/en/authorize?" +
                          "&scope=user-read-currently-playing,user-modify-playback-state";
 
 function App() {
-    const [imageURL, setImageURL] = useState("");
-    const [time, setTime] = useState(0);
+    const [playing, setPlaying] = useState<boolean | undefined>(undefined);
+    const [imageURL, setImageURL] = useState<string | undefined>(undefined);
+    const [time, setTime] = useState<number>(0);
     const cover = useRef(null);
     const [spotifyApi, ] = useState(new SpotifyWebApi());
     const [cookies, setCookie, removeCookie] = useCookies(['spotify_token']);
@@ -39,33 +40,14 @@ function App() {
         return () => { }
     }, []);
 
-    function play() {
-        spotifyApi.play();
-        setTime(0);
-    }
-
-    function pause() {
-        spotifyApi.pause();
-        setTime(0);
-    }
-
-    function next() {
-        spotifyApi.skipToNext();
-        setTime(0);
-    }
-
-    function previuous() {
-        spotifyApi.skipToPrevious();
-        setTime(0);
-    }
-
     useEffect(() => {
         console.log("Repainting!");
         let objectCurrent = spotifyApi.getMyCurrentPlayingTrack();
-        let interval:number;
+        let interval = 0;
         objectCurrent.then((result) => {
             if(result.item != null) {
-                console.log(result);
+                // console.log(result);
+                setPlaying(true);
                 if(!result.progress_ms) {
                     interval = setInterval(() => setTime(Date.now()), 2000);
                 }
@@ -80,6 +62,8 @@ function App() {
             }
             else {
                 console.log("Nothing is playin...")
+                setPlaying(false);
+                setImageURL(undefined);
                 interval = setInterval(() => setTime(Date.now()), 2000);
             }
         }).catch((error) => {
@@ -94,22 +78,44 @@ function App() {
     }, [time]);
 
     useEffect(() => {
-        console.log("Changing color of effect..");
-        const fac = new FastAverageColor();
-        imageURL && fac.getColorAsync(imageURL)
-        .then(color => {
-            // console.log('Average color', color);
-            document.documentElement.style.setProperty('--logo-color', color.hex + "aa");
-        })
-        .catch(e => {
-            console.log(e);
-        });
+        if(imageURL) {   
+            console.log("Changing color of effect..");
+            const fac = new FastAverageColor();
+            imageURL && fac.getColorAsync(imageURL).then(color => {
+                // console.log('Average color', color);
+                document.documentElement.style.setProperty('--logo-color', color.hex + "aa");
+            }).catch(e => {
+                console.log(e);
+            });
+        }
     }, [imageURL])
+
+    function play() {
+        spotifyApi.play();
+        setTime(0);
+    }
+
+    function pause() {
+        console.log("Pausing...");
+        spotifyApi.pause();
+        setTime(0);
+    }
+
+    function next() {
+        spotifyApi.skipToNext();
+        setTime(0);
+    }
+
+    function previuous() {
+        spotifyApi.skipToPrevious();
+        setTime(0);
+    }
 
     return (
         <div className="App">
             <div className="card">
                 <img src={imageURL} className="logo" id="cover" ref={cover} />
+                {playing == false && <h1>Nothing is playing!</h1>}
             </div>
             <div className="buttons">
                 <button onClick={next}>Next</button>
