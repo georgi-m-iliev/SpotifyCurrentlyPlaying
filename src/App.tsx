@@ -14,6 +14,7 @@ function App() {
     const [playing, setPlaying] = useState<boolean | undefined>(undefined);
     const [imageURL, setImageURL] = useState<string | undefined>(undefined);
     const [time, setTime] = useState<number>(0);
+    const [fullScreen, setFullScreen] = useState<boolean>(false);
     const cover = useRef(null);
     const [spotifyApi, ] = useState(new SpotifyWebApi());
     const [cookies, setCookie, removeCookie] = useCookies(['spotify_token']);
@@ -111,6 +112,19 @@ function App() {
         setTime(0);
     }
 
+    function toggleFullScreen() {
+        if(fullScreen) {
+            console.log("Exiting fullscreen...");
+            document.exitFullscreen();
+        }
+        else {
+            console.log("Going fullscreen...");
+            document.documentElement.requestFullscreen();
+        }
+        setFullScreen((oldFullScreen) => !oldFullScreen);
+    }
+    
+
     return (
         <div className="App">
             <div className="card">
@@ -118,11 +132,13 @@ function App() {
                 {playing == false && <h1>Nothing is playing!</h1>}
             </div>
             <div className="buttons">
-                <button onClick={next}>Next</button>
-                <button onClick={pause}>||</button>
-                <button onClick={play}>|&gt;</button>
-                <button onClick={previuous}>Previous</button>
+                <button onClick={previuous}>&#8592;</button>
+                <button onClick={play}>&#9654;</button>
+                <button onClick={pause}>&#9208;</button>
+                <button onClick={next}>&#8594;</button>
+                <button onClick={toggleFullScreen}>&#10529;</button>
             </div>
+            <a href="https://github.com/georgi-m-iliev" className="sup">Georgi Iliev &#169;</a>
         </div>
     )
 }
