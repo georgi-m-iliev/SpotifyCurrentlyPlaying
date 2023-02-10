@@ -1,7 +1,7 @@
-import {useState, useEffect, useRef} from 'react'
-import {useCookies} from 'react-cookie'
-import SpotifyWebApi from 'spotify-web-api-js'
-import { ReactSVG } from 'react-svg'
+import {useState, useEffect, useRef} from 'react';
+import {useCookies} from 'react-cookie';
+import SpotifyWebApi from 'spotify-web-api-js';
+import { ReactSVG } from 'react-svg';
 import { FastAverageColor } from 'fast-average-color';
 import './App.css'
 
@@ -71,6 +71,7 @@ function App() {
         }).catch((error) => {
             if(error.status == 401 && cookies.spotify_token) {
                 removeCookie("spotify_token");
+                // console.log(SPOTIFY_AUTH_URL);
                 window.location.replace(SPOTIFY_AUTH_URL);
             }
         })
@@ -135,11 +136,11 @@ function App() {
                 {playing == false && <h1>Nothing is playing!</h1>}
             </div>
             <div className="buttons">
-                <button className="button" onClick={previuous}><ReactSVG className="button-img" src="/assets/skip-previous.svg"/></button>
-                <button className="button" onClick={play}><ReactSVG className="button-img" src="/assets/play.svg"/></button>
-                <button className="button" onClick={pause}><ReactSVG className="button-img" src="/assets/pause.svg"/></button>
-                <button className="button" onClick={next}><ReactSVG className="button-img" src="/assets/skip-next.svg"/></button>
-                <button className="button" onClick={toggleFullScreen}><ReactSVG className="button-img" src={"/assets/" + (fullScreen ? "fullscreen-exit.svg" : "fullscreen.svg")}/></button>
+                <button className="button" onClick={previuous}><ReactSVG className="button-img" src={import.meta.env.VITE_ORIGIN_URL + "/assets/skip-previous.svg"}/></button>
+                <button className="button" onClick={play}><ReactSVG className="button-img" src={import.meta.env.VITE_ORIGIN_URL + "/assets/play.svg"}/></button>
+                <button className="button" onClick={pause}><ReactSVG className="button-img" src={import.meta.env.VITE_ORIGIN_URL + "/assets/pause.svg"}/></button>
+                <button className="button" onClick={next}><ReactSVG className="button-img" src={import.meta.env.VITE_ORIGIN_URL + "/assets/skip-next.svg"}/></button>
+                <button className="button" onClick={toggleFullScreen}><ReactSVG className="button-img" src={import.meta.env.VITE_ORIGIN_URL + "/assets/" + (fullScreen ? "fullscreen-exit.svg" : "fullscreen.svg")}/></button>
             </div>
             <a href="https://github.com/georgi-m-iliev" className="sup" target="_blank">Georgi Iliev &#169;</a>
         </div>
