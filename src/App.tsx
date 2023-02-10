@@ -1,6 +1,7 @@
 import {useState, useEffect, useRef} from 'react'
 import {useCookies} from 'react-cookie'
 import SpotifyWebApi from 'spotify-web-api-js'
+import { ReactSVG } from 'react-svg'
 import { FastAverageColor } from 'fast-average-color';
 import './App.css'
 
@@ -82,12 +83,14 @@ function App() {
         if(imageURL) {   
             console.log("Changing color of effect..");
             const fac = new FastAverageColor();
-            imageURL && fac.getColorAsync(imageURL).then(color => {
-                // console.log('Average color', color);
-                document.documentElement.style.setProperty('--logo-color', color.hex + "aa");
-            }).catch(e => {
-                console.log(e);
-            });
+            if(imageURL) {
+                fac.getColorAsync(imageURL).then(color => {
+                    // console.log('Average color', color);
+                    document.documentElement.style.setProperty('--logo-color', color.hex);
+                }).catch(e => {
+                    console.log(e);
+                });
+            }
         }
     }, [imageURL])
 
@@ -132,13 +135,13 @@ function App() {
                 {playing == false && <h1>Nothing is playing!</h1>}
             </div>
             <div className="buttons">
-                <button onClick={previuous}>&#8592;</button>
-                <button onClick={play}>&#9654;</button>
-                <button onClick={pause}>&#9208;</button>
-                <button onClick={next}>&#8594;</button>
-                <button onClick={toggleFullScreen}>&#10529;</button>
+                <button className="button" onClick={previuous}><ReactSVG className="button-img" src="/assets/skip-previous.svg"/></button>
+                <button className="button" onClick={play}><ReactSVG className="button-img" src="/assets/play.svg"/></button>
+                <button className="button" onClick={pause}><ReactSVG className="button-img" src="/assets/pause.svg"/></button>
+                <button className="button" onClick={next}><ReactSVG className="button-img" src="/assets/skip-next.svg"/></button>
+                <button className="button" onClick={toggleFullScreen}><ReactSVG className="button-img" src={"/assets/" + (fullScreen ? "fullscreen-exit.svg" : "fullscreen.svg")}/></button>
             </div>
-            <a href="https://github.com/georgi-m-iliev" className="sup">Georgi Iliev &#169;</a>
+            <a href="https://github.com/georgi-m-iliev" className="sup" target="_blank">Georgi Iliev &#169;</a>
         </div>
     )
 }

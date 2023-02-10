@@ -1,55 +1,47 @@
 .App {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  padding-top: 1rem; 
-  text-align: center;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
 }
 
 .logo {
-    padding: 1.5em;
+    max-width: 80vw;
     will-change: filter;
     transition: filter 300ms;
     user-select: none;
 }
 
 .logo:hover {
-    filter: drop-shadow(0 0 2em var(--logo-color));
+    filter: drop-shadow(0 0 3.5em var(--logo-color));
 }
-/* 
-img {
-    display: block;
-    width: 100%;
-    height: auto;
-} */
 
 .card {
-    padding: 2em;
-    width: 80vmin;
-    height: 80vmin;
+    /* padding-left: 3vw; */
+    /* padding-right: 3vw; */
 }
-  
-.buttons {
+
+.button {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
+    background-color: var(--logo-color);
+}
+
+.button-img {
+    /* fill: var(--logo-color); */
+}
+
+.buttons {
+    max-width: 80vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: no-wrap;
     gap: 20px;
-}
-
-@keyframes logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    a:nth-of-type(2) .logo {
-        animation: logo-spin infinite 20s linear;
-    }
+    /*padding: 2em;
+    padding-top: 0; */
 }
 
 .sup {
