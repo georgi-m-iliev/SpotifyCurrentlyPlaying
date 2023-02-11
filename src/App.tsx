@@ -12,14 +12,16 @@ const SPOTIFY_AUTH_URL = "https://accounts.spotify.com/en/authorize?" +
                          "&scope=user-read-currently-playing,user-modify-playback-state";
 
 function App() {
-    const [playing, setPlaying] = useState<boolean | undefined>(undefined);
-    const [imageURL, setImageURL] = useState<string | undefined>(undefined);
-    const [time, setTime] = useState<number>(0);
-    const [fullScreen, setFullScreen] = useState<boolean>(false);
-    const cover = useRef(null);
     const [spotifyApi, ] = useState(new SpotifyWebApi());
     const [cookies, setCookie, removeCookie] = useCookies(['spotify_token']);
+    const coverElement = useRef(null);
+    const [playing, setPlaying] = useState<boolean | undefined>(undefined);
+    const [imageURL, setImageURL] = useState<string | undefined>(undefined);
+    const [data, setData] = useState< any | undefined>(undefined);
+    const [refreshTimeout, setRefreshTimeout] = useState<number>(0);
+    const [fullScreen, setFullScreen] = useState<boolean>(false);
 
+    // Authentication with Spotify API
     useEffect(() => {
         console.log("First startup");
         if(!cookies.spotify_token) {
@@ -42,16 +44,18 @@ function App() {
         return () => { }
     }, []);
 
+    // Fetching needed information from Spotify API
     useEffect(() => {
         console.log("Repainting!");
-        let objectCurrent = spotifyApi.getMyCurrentPlayingTrack();
+        const objectCurrent = spotifyApi.getMyCurrentPlayingTrack();
         let interval = 0;
         objectCurrent.then((result) => {
+            setData(result);
             if(result.item != null) {
                 // console.log(result);
                 setPlaying(true);
                 if(!result.progress_ms) {
-                    interval = setInterval(() => setTime(Date.now()), 2000);
+                    interval = setInterval(() => setRefreshTimeout(Date.now()), 2000);
                 }
                 else {
                     if(imageURL != result.item.album.images[0].url) {
@@ -59,14 +63,14 @@ function App() {
                     }   
                     let duration_ms:number = result.item.duration_ms;
                     let progress_ms:number = result.progress_ms;
-                    interval = setInterval(() => setTime(Date.now()), (duration_ms - progress_ms) + 1000);
+                    interval = setInterval(() => setRefreshTimeout(Date.now()), (duration_ms - progress_ms) + 1000);
                 }
             }
             else {
                 console.log("Nothing is playin...")
                 setPlaying(false);
                 setImageURL(undefined);
-                interval = setInterval(() => setTime(Date.now()), 2000);
+                interval = setInterval(() => setRefreshTimeout(Date.now()), 2000);
             }
         }).catch((error) => {
             if(error.status == 401 && cookies.spotify_token) {
@@ -78,8 +82,9 @@ function App() {
         return () => {
             clearInterval(interval);
         };
-    }, [time]);
+    }, [refreshTimeout]);
 
+    // Fetching average color of album cover
     useEffect(() => {
         if(imageURL) {   
             console.log("Changing color of effect..");
@@ -97,23 +102,23 @@ function App() {
 
     function play() {
         spotifyApi.play();
-        setTime(0);
+        setRefreshTimeout(0);
     }
 
     function pause() {
         console.log("Pausing...");
         spotifyApi.pause();
-        setTime(0);
+        setRefreshTimeout(0);
     }
 
     function next() {
         spotifyApi.skipToNext();
-        setTime(0);
+        setRefreshTimeout(0);
     }
 
     function previuous() {
         spotifyApi.skipToPrevious();
-        setTime(0);
+        setRefreshTimeout(0);
     }
 
     function toggleFullScreen() {
@@ -131,8 +136,9 @@ function App() {
 
     return (
         <div className="App">
+            <p className="title">{data?.item?.name}</p>
             <div className="card">
-                <img src={imageURL} className="logo" id="cover" ref={cover} />
+                <img src={imageURL} className="logo" id="cover" ref={coverElement} />
                 {playing == false && <h1>Nothing is playing!</h1>}
             </div>
             <div className="buttons">
